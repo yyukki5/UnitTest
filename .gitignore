@@ -13,8 +13,6 @@ vbac.wsf
 ~$*
 
 # remove files for release
-UnitTest.cls
-UnitTests.bas
 
 
 # User-specific files
