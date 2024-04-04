@@ -4,17 +4,16 @@ Option Explicit
 Private test_ As New UnitTest
 
 Sub RunTests()
-    Dim test As UnitTest
-    Set test = New UnitTest
+    Dim test As New UnitTest
 
     test.RegisterTest "Test_Test"
+    test.RegisterTest "Test_Test1"
     
-    test.RunTests
+    test.RunTests test_
 End Sub
 
 
 Sub Test_Test()
-    Set test_ = New UnitTest
     test_.AssertTrue True
     test_.AssertTrue False
     test_.AssertFalse False
@@ -23,16 +22,18 @@ Sub Test_Test()
     test_.AssertEqual 1, 2
     test_.AssertNotEqual 1, 2
     test_.AssertNotEqual 1, 1
-    
-    On Error Resume Next
+
+    On Error Resume Next '<--- Need for .AssertHasError(), .AssertHasNoError()
     Err.Raise 9001
     test_.AssertHasError
-    Err.Raise 9001
+    Err.Raise 9001, "Sample", "This is sample Error."
     test_.AssertHasNoError
-    
+
     Err.Clear
     test_.AssertHasError
     Err.Clear
     test_.AssertHasNoError
+    On Error GoTo 0
     
 End Sub
+
