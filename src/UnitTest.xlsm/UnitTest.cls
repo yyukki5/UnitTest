@@ -108,7 +108,9 @@ End Function
 
 Public Function AssertNotEqual(expected, actual)
     On Error GoTo errCondition
-    If expected <> actual Then Else Call Err.Raise(9004, "", "NG: Should be NOT Equal. expected is " & expected & ", actual is " & actual)
+    If VarType(expected) = vbObject And VarType(actual) = vbObject Then If expected.Equals((actual)) = False Then GoTo pass Else Call Err.Raise(9004, "", "NG: Should NOT be equal.")
+    If expected <> actual Then Else Call Err.Raise(9004, "", "NG: Should NOT be Equal. expected is " & expected & ", actual is " & actual)
+pass:
     Exit Function
 errCondition:
     CopyErr
