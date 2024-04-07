@@ -11,13 +11,7 @@ Option Explicit
 
 ' ------------------------------------------------------------------------------------------------------------
 ' Project           : https://github.com/yyukki5/UnitTest
-' Version           : 1.0.0
-' Dependencies      :
-' Features
-'  - Assert*        : Asserting for test result.
-'  - RegisterTest   : Register Test for RunTests()
-'  - RunTests       : Run registered tests
-' - ...
+' Version           : 1.1.0
 ' ------------------------------------------------------------------------------------------------------------
 
 Private hasError_ As Boolean
