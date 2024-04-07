@@ -8,6 +8,8 @@ Sub RunTests()
 
     test.RegisterTest "Test_Test"
     test.RegisterTest "Test_Test1"
+    test.RegisterTest "Add_Scenario_ExpectedBehavior", 4, 17, 1
+    test.RegisterTest "Add_Scenario_ExpectedBehavior", 10, 16, 26
     
     test.RunTests test_
 End Sub
@@ -37,3 +39,15 @@ Sub Test_Test()
     
 End Sub
 
+Sub Add_Scenario_ExpectedBehavior(a, b, res)
+    ' Arrange
+    Dim result As Double
+    ' Act
+    result = Add(a, b)
+    ' Assert
+    test_.AssertEqual res, result
+End Sub
+
+Private Function Add(a, b) As Double
+    Add = a + b
+End Function
