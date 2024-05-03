@@ -3,18 +3,23 @@ Option Explicit
 
 Private test_ As New UnitTest
 
+Sub CreateTests()
+    test_.CreateRunTests "UnitTests", "test_"
+End Sub
+
 Sub RunTests()
-    Dim test As New UnitTest
+   Dim test As New UnitTest
 
     test.RegisterTest "Test_Test"
-    test.RegisterTest "Test_Test1"
     test.RegisterTest "Add_Scenario_ExpectedBehavior", 4, 17, 1
     test.RegisterTest "Add_Scenario_ExpectedBehavior", 10, 16, 26
-    
+    test.RegisterTest "Add_Scenario_ExpectedBehavior", 1, 2, 3
+    test.RegisterTest "Add_Scenario_ExpectedBehavior", 2, 3, 4
+
     test.RunTests test_
 End Sub
 
-
+'[Fact]
 Sub Test_Test()
     test_.AssertTrue True
     test_.AssertTrue False
@@ -39,6 +44,11 @@ Sub Test_Test()
     
 End Sub
 
+
+'[Theory]
+'[InlineData(4, 17, 1)]
+'[InlineData(10, 16, 26)]
+'[MemberData(GetMembers)]
 Sub Add_Scenario_ExpectedBehavior(a, b, res)
     ' Arrange
     Dim result As Double
@@ -51,3 +61,12 @@ End Sub
 Private Function Add(a, b) As Double
     Add = a + b
 End Function
+
+Public Function GetMembers() As Collection
+    Dim c As New Collection, i As Long
+    For i = 1 To 2
+       c.Add Array(i, i + 1, i + 2)
+    Next i
+    Set GetMembers = c
+End Function
+

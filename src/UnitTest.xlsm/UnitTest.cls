@@ -24,6 +24,7 @@ Private testFunctions_ As Collection
 
 Private Const KEY_NAME As String = "TestName"
 Private Const KEY_PARAMETERS As String = "Parameters"
+Private Const RUN_TESTS_NAME As String = "RunTests"
 
 Private Sub Class_Initialize()
     Set testFunctions_ = New Collection
@@ -159,6 +160,39 @@ Public Function ClearErr()
     errResult_ = ""
 End Function
 
+' Before Using this function: Need to check in option of application, "Trust access to the VBA project object model"
+Public Sub CreateRunTests(moduleName As String, Optional privateUnitTestName As String = "test_")
+    Dim i As Long, txt As String, txts, code As String, testFuncs As New Collection, testFuncInfos As Collection, runTestsLine As Long, codeModuleObject As Object
+          
+    Set codeModuleObject = Application.VBE.ActiveVBProject.VBComponents(moduleName).CodeModule
+    txt = codeModuleObject.Lines(1, codeModuleObject.CountOfLines)
+    txts = Split(txt, vbCrLf)
+    For i = LBound(txts) To UBound(txts)
+        If InStr(txts(i), "'[Fact") > 0 Or InStr(txts(i), "'[Theory") > 0 Then
+            If InStr(txts(i), "Skip") > 0 Then GoTo nextloop
+            Set testFuncInfos = New Collection
+            If runTestsLine = 0 Then runTestsLine = i
+            testFuncInfos.Add GetFunctionName(txts, i), "Name"
+'            If InStr(txts(i), "'[Fact]") > 0 Then
+            If InStr(txts(i), "'[Theory]") > 0 Then testFuncInfos.Add GetTheoryData(txts, i), "Data"
+            testFuncs.Add testFuncInfos
+        End If
+nextloop:
+    Next i
+    code = GetRunTestsCode(testFuncs, privateUnitTestName)
+    
+    With codeModuleObject
+        On Error GoTo nonRunTests
+        runTestsLine = .ProcStartLine(RUN_TESTS_NAME, 0)
+        .DeleteLines runTestsLine, .ProcCountLines(RUN_TESTS_NAME, 0)
+        .InsertLines runTestsLine, code
+        Exit Sub
+nonRunTests:
+        .InsertLines runTestsLine, code
+        Exit Sub
+    End With
+End Sub
+
 ' ------------------------------------------------------------------------
 Private Function RunTest(testFunc As Collection, uTest As UnitTest)
 On Error Resume Next
@@ -241,3 +275,61 @@ Private Function GetFunctionStringWithArgument(testFunc As Collection) As String
     GetFunctionStringWithArgument = str
 End Function
 
+Private Function GetFunctionName(texts, startLine As Long) As String
+    Dim i As Long, funcName As String
+
+    For i = startLine To UBound(texts)
+        If InStr(LCase(texts(i)), "sub ") > 0 Then funcName = texts(i): Exit For
+        If InStr(LCase(texts(i)), "function ") > 0 Then funcName = texts(i): Exit For
+    Next i
+    funcName = Replace(Replace(Replace(Replace(funcName, "Sub ", ""), "Function ", ""), "Property Get ", ""), "Property Set ", "")
+    funcName = Left(funcName, InStr(funcName, "(") - 1)
+    funcName = Replace(funcName, " ", "")
+    GetFunctionName = funcName
+End Function
+
+Private Function GetTheoryData(texts, startLine As Long) As Collection
+    Dim i As Long, funcName As String, theoryDatas As New Collection, dataName, memberData, memberDatas As Collection
+
+    For i = startLine To UBound(texts)    
+        If InStr(LCase(texts(i)), "[inlinedata(") > 0 Then
+            theoryDatas.Add Replace(Replace(Mid(texts(i), Len("'[inlinedata(") + 1), " ", ""), ")]", "")
+        End If
+        If InStr(LCase(texts(i)), "[memberdata(") > 0 Then
+            dataName = Replace(Replace(Mid(texts(i), Len("'[memberdata(") + 1), " ", ""), ")]", "")
+            Set memberDatas = Application.Run(dataName)
+            For Each memberData In memberDatas
+                theoryDatas.Add Join(memberData, ",")
+            Next
+        End If
+        If InStr(LCase(texts(i)), "sub ") > 0 Then funcName = texts(i): Exit For
+        If InStr(LCase(texts(i)), "function ") > 0 Then funcName = texts(i): Exit For
+    Next i
+    
+    Set GetTheoryData = theoryDatas
+End Function
+
+Private Function GetRunTestsCode(testFuncs As Collection, privateTestUnitName As String) As String
+    Dim s, code As String, codes As New Collection, testFuncInfos As Collection
+
+    With codes
+        .Add "Sub " & RUN_TESTS_NAME & "()"
+        .Add "   Dim test As New UnitTest"
+        .Add ""
+        For Each testFuncInfos In testFuncs
+            If testFuncInfos.Count = 1 Then
+                .Add "    test.RegisterTest """ & testFuncInfos.Item("Name") & """"
+            Else
+                For Each s In testFuncInfos.Item("Data")
+                    .Add "    test.RegisterTest """ & testFuncInfos.Item("Name") & """, " & s
+                Next
+            End If
+        Next
+        .Add ""
+        .Add "    test.RunTests " & privateTestUnitName
+        .Add "End Sub"
+    End With
+    For Each s In codes: code = code & vbCrLf & s:       Next
+    
+    GetRunTestsCode = code
+End Function
