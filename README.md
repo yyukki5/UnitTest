@@ -14,6 +14,11 @@ src
  - Run single test method by Run macro(F5), you can validate by Assert*() functions.
  - RunTests() function run registered test by RegisterTest().
     - Registered test name is called from UnitTest.cls by Application.Run().
+ - CreateRunTests() function can create RunTests().
+    - RunTests() method has been created, based on header ( comment as "[Fact]", "[Theory]") of test function.
+    - [Fact], [Theory] can use "Skip".
+    - [Theory] can use "InlineData()", "MemberData".
+ 
 
 Before using, switch error trapping in VBE > Tools > Options > General > Error Trapping > "Break on Unhandled Errors".
 
