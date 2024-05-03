@@ -277,11 +277,11 @@ End Function
 
 Private Function GetFunctionName(texts, startLine As Long) As String
     Dim i As Long, funcName As String
+
     For i = startLine To UBound(texts)
         If InStr(LCase(texts(i)), "sub ") > 0 Then funcName = texts(i): Exit For
         If InStr(LCase(texts(i)), "function ") > 0 Then funcName = texts(i): Exit For
     Next i
-    
     funcName = Replace(Replace(Replace(Replace(funcName, "Sub ", ""), "Function ", ""), "Property Get ", ""), "Property Set ", "")
     funcName = Left(funcName, InStr(funcName, "(") - 1)
     funcName = Replace(funcName, " ", "")
@@ -290,8 +290,8 @@ End Function
 
 Private Function GetTheoryData(texts, startLine As Long) As Collection
     Dim i As Long, funcName As String, theoryDatas As New Collection, dataName, memberData, memberDatas As Collection
-    For i = startLine To UBound(texts)
-        
+
+    For i = startLine To UBound(texts)    
         If InStr(LCase(texts(i)), "[inlinedata(") > 0 Then
             theoryDatas.Add Replace(Replace(Mid(texts(i), Len("'[inlinedata(") + 1), " ", ""), ")]", "")
         End If
