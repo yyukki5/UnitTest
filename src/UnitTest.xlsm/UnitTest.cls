@@ -121,6 +121,191 @@ errCondition:
     If isSingleTest Then DebugPrintErr
 End Function
 
+Public Function AssertSame(expected, actual)
+    On Error GoTo errCondition
+    If expected Is actual Then Else Call Err.Raise(9007, "", "NG: Should be same. but Not same")
+pass:
+    Exit Function
+errCondition:
+    CopyErr
+    If isSingleTest Then DebugPrintErr
+End Function
+
+Public Function AssertNotSame(expected, actual)
+    On Error GoTo errCondition
+    If expected Is actual Then Call Err.Raise(9008, "", "NG: Should be Not same. but same")
+pass:
+    Exit Function
+errCondition:
+    CopyErr
+    If isSingleTest Then DebugPrintErr
+End Function
+
+Public Function AssertContains(expected, collect)
+    On Error GoTo errCondition
+    Dim src
+    For Each src In collect
+        If expected = src Then GoTo pass
+    Next
+    Call Err.Raise(9009, "", "NG: Should contain")
+pass:
+    Exit Function
+errCondition:
+    CopyErr
+    If isSingleTest Then DebugPrintErr
+End Function
+
+Public Function AssertDoesNotContains(expected, collect)
+    On Error GoTo errCondition
+    Dim src
+    For Each src In collect
+        If expected = src Then Call Err.Raise(9010, "", "NG: Should Not contain")
+    Next
+pass:
+    Exit Function
+errCondition:
+    CopyErr
+    If isSingleTest Then DebugPrintErr
+End Function
+
+Public Function AssertInRange(actual, low, high)
+    On Error GoTo errCondition
+    If low <= actual And actual <= high Then GoTo pass Else Call Err.Raise(9011, "", "NG: Should be " & actual & " in Range(" & low & ", " & high & ")")
+pass:
+    Exit Function
+errCondition:
+    CopyErr
+    If isSingleTest Then DebugPrintErr
+End Function
+
+Public Function AssertNotInRange(actual, low, high)
+    On Error GoTo errCondition
+    If low <= actual And actual <= high Then Call Err.Raise(9012, "", "NG: Should Not be " & actual & " in Range(" & low & ", " & high & ")") Else GoTo pass
+pass:
+    Exit Function
+errCondition:
+    CopyErr
+    If isSingleTest Then DebugPrintErr
+End Function
+
+Public Function AssertStartsWith(expectedStartString, actualString)
+    On Error GoTo errCondition
+    If Left(actualString, Len(expectedStartString)) = expectedStartString Then GoTo pass Else Call Err.Raise(9013, "", "NG: Should be start with """ & expectedStartString & """, but """ & actualString & """")
+pass:
+    Exit Function
+errCondition:
+    CopyErr
+    If isSingleTest Then DebugPrintErr
+End Function
+
+Public Function AssertEndsWith(expectedEndString, actualString)
+    On Error GoTo errCondition
+    If Right(actualString, Len(expectedEndString)) = expectedEndString Then GoTo pass Else Call Err.Raise(9013, "", "NG: Should be end with """ & expectedEndString & """, but """ & actualString & """")
+pass:
+    Exit Function
+errCondition:
+    CopyErr
+    If isSingleTest Then DebugPrintErr
+End Function
+Public Function AssertEmpty(collect)
+    On Error GoTo errCondition
+    Dim src
+    For Each src In collect
+        Call Err.Raise(9014, "", "NG: Should be empty")
+    Next
+pass:
+    Exit Function
+errCondition:
+    CopyErr
+    If isSingleTest Then DebugPrintErr
+End Function
+
+Public Function AssertNotEmpty(collect)
+    On Error GoTo errCondition
+    Dim src
+    For Each src In collect
+        GoTo pass
+    Next
+    Call Err.Raise(9015, "", "NG: Should be Not empty")
+pass:
+    Exit Function
+errCondition:
+    CopyErr
+    If isSingleTest Then DebugPrintErr
+End Function
+
+Public Function AssertNull(obj)
+    On Error GoTo errCondition
+    If IsNull(obj) Then Else Call Err.Raise(9016, "", "NG: Should be null")
+pass:
+    Exit Function
+errCondition:
+    CopyErr
+    If isSingleTest Then DebugPrintErr
+End Function
+
+Public Function AssertNotNull(obj)
+    On Error GoTo errCondition
+    If IsNull(obj) Then Call Err.Raise(9017, "", "NG: Should be Not null")
+pass:
+    Exit Function
+errCondition:
+    CopyErr
+    If isSingleTest Then DebugPrintErr
+End Function
+
+Public Function AssertNothing(obj)
+    On Error GoTo errCondition
+    If VarType(obj) <> vbObject Then Call Err.Raise(9016, "", "NG: Should be object")
+    If obj Is Nothing Then Else Call Err.Raise(9016, "", "NG: Should be Nothing")
+pass:
+    Exit Function
+errCondition:
+    CopyErr
+    If isSingleTest Then DebugPrintErr
+End Function
+
+Public Function AssertNotNothing(obj)
+    On Error GoTo errCondition
+    If VarType(obj) <> vbObject Then Call Err.Raise(9017, "", "NG: Should be object")
+    If obj Is Nothing Then Call Err.Raise(9017, "", "NG: Should be Not Nothing")
+pass:
+    Exit Function
+errCondition:
+    CopyErr
+    If isSingleTest Then DebugPrintErr
+End Function
+
+Public Function AssertIsType(expectedType As String, obj)
+    On Error GoTo errCondition
+    If TypeName(obj) = expectedType Then Else Call Err.Raise(9018, "", "NG: Should be type """ & expectedType & """, but """ & TypeName(obj) & """")
+pass:
+    Exit Function
+errCondition:
+    CopyErr
+    If isSingleTest Then DebugPrintErr
+End Function
+
+Public Function AssertIsNotType(expectedType As String, obj)
+    On Error GoTo errCondition
+    If TypeName(obj) = expectedType Then Call Err.Raise(9019, "", "NG: Should Not be type """ & expectedType & """, but """ & TypeName(obj) & """")
+pass:
+    Exit Function
+errCondition:
+    CopyErr
+    If isSingleTest Then DebugPrintErr
+End Function
+
+Public Function AssertSingle(collect)
+    On Error GoTo errCondition
+    If collect.Count <> 1 Then Call Err.Raise(9020, "", "NG: Should be single")
+pass:
+    Exit Function
+errCondition:
+    CopyErr
+    If isSingleTest Then DebugPrintErr
+End Function
+
 Public Function AssertHasError()
      If Err.Number <> 0 Then
     Else
@@ -291,7 +476,7 @@ End Function
 Private Function GetTheoryData(texts, startLine As Long) As Collection
     Dim i As Long, funcName As String, theoryDatas As New Collection, dataName, memberData, memberDatas As Collection
 
-    For i = startLine To UBound(texts)    
+    For i = startLine To UBound(texts)
         If InStr(LCase(texts(i)), "[inlinedata(") > 0 Then
             theoryDatas.Add Replace(Replace(Mid(texts(i), Len("'[inlinedata(") + 1), " ", ""), ")]", "")
         End If
