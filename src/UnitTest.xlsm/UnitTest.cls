@@ -168,14 +168,16 @@ Public Sub CreateRunTests(moduleName As String, Optional privateUnitTestName As 
     txt = codeModuleObject.Lines(1, codeModuleObject.CountOfLines)
     txts = Split(txt, vbCrLf)
     For i = LBound(txts) To UBound(txts)
-        Set testFuncInfos = New Collection
-        If InStr(txts(i), "'[Fact]") > 0 Or InStr(txts(i), "'[Theory]") > 0 Then
+        If InStr(txts(i), "'[Fact") > 0 Or InStr(txts(i), "'[Theory") > 0 Then
+            If InStr(txts(i), "Skip") > 0 Then GoTo nextloop
+            Set testFuncInfos = New Collection
             If runTestsLine = 0 Then runTestsLine = i
             testFuncInfos.Add GetFunctionName(txts, i), "Name"
 '            If InStr(txts(i), "'[Fact]") > 0 Then
             If InStr(txts(i), "'[Theory]") > 0 Then testFuncInfos.Add GetTheoryData(txts, i), "Data"
             testFuncs.Add testFuncInfos
         End If
+nextloop:
     Next i
     code = GetRunTestsCode(testFuncs, privateUnitTestName)
     
@@ -278,8 +280,6 @@ Private Function GetFunctionName(texts, startLine As Long) As String
     For i = startLine To UBound(texts)
         If InStr(LCase(texts(i)), "sub ") > 0 Then funcName = texts(i): Exit For
         If InStr(LCase(texts(i)), "function ") > 0 Then funcName = texts(i): Exit For
-        If InStr(LCase(texts(i)), "property get ") > 0 Then funcName = texts(i): Exit For
-        If InStr(LCase(texts(i)), "property set ") > 0 Then funcName = texts(i): Exit For
     Next i
     
     funcName = Replace(Replace(Replace(Replace(funcName, "Sub ", ""), "Function ", ""), "Property Get ", ""), "Property Set ", "")
@@ -304,8 +304,6 @@ Private Function GetTheoryData(texts, startLine As Long) As Collection
         End If
         If InStr(LCase(texts(i)), "sub ") > 0 Then funcName = texts(i): Exit For
         If InStr(LCase(texts(i)), "function ") > 0 Then funcName = texts(i): Exit For
-        If InStr(LCase(texts(i)), "property get ") > 0 Then funcName = texts(i): Exit For
-        If InStr(LCase(texts(i)), "property set ") > 0 Then funcName = texts(i): Exit For
     Next i
     
     Set GetTheoryData = theoryDatas

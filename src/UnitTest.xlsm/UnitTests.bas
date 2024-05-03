@@ -48,7 +48,7 @@ End Sub
 '[Theory]
 '[InlineData(4, 17, 1)]
 '[InlineData(10, 16, 26)]
-'[MemberData(GetMembers) ]
+'[MemberData(GetMembers)]
 Sub Add_Scenario_ExpectedBehavior(a, b, res)
     ' Arrange
     Dim result As Double
