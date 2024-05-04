@@ -105,7 +105,7 @@ End Function
 
 Public Function AssertEqual(expected, actual)
     On Error GoTo errCondition
-    If Equals(expected, actual) = False Then Call Err.Raise(9003, "", "Failure: Should be Equal. expected is " & expected & ", actual is " & actual)
+    If Equals(expected, actual) = False Then Call Err.Raise(9003, "", "Failure: Should be Equal. expected is " & ToString(expected) & ", actual is " & ToString(actual))
     Exit Function
 errCondition:
     ErrorProcess
@@ -113,7 +113,7 @@ End Function
 
 Public Function AssertNotEqual(expected, actual)
     On Error GoTo errCondition
-    If Equals(expected, actual) Then Call Err.Raise(9004, "", "Failure: Should NOT be Equal. expected is " & expected & ", actual is " & actual)
+    If Equals(expected, actual) Then Call Err.Raise(9004, "", "Failure: Should NOT be Equal. expected is " & ToString(expected) & ", actual is " & ToString(actual))
     Exit Function
 errCondition:
     ErrorProcess
@@ -413,48 +413,52 @@ Private Function ApplicationRun(testFunc As Collection) As Variant
     
     funcName = testFunc(KEY_NAME)
     p = testFunc(KEY_PARAMETERS)
+    With Application
     Select Case UBound(p) + 1
-        Case 0: res = Run(funcName)
-        Case 1: res = Run(funcName, p(0))
-        Case 2: res = Run(funcName, p(0), p(1))
-        Case 3: res = Run(funcName, p(0), p(1), p(2))
-        Case 4: res = Run(funcName, p(0), p(1), p(2), p(3))
-        Case 5: res = Run(funcName, p(0), p(1), p(2), p(3), p(4))
-        Case 6: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5))
-        Case 7: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6))
-        Case 8: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7))
-        Case 9: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8))
-        Case 10: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9))
-        Case 11: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10))
-        Case 12: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11))
-        Case 13: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12))
-        Case 14: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13))
-        Case 15: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14))
-        Case 16: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15))
-        Case 17: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16))
-        Case 18: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17))
-        Case 19: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18))
-        Case 20: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18), p(19))
-        Case 21: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18), p(19), p(20))
-        Case 22: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18), p(19), p(20), p(21))
-        Case 23: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18), p(19), p(20), p(21), p(22))
-        Case 24: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18), p(19), p(20), p(21), p(22), p(23))
-        Case 25: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18), p(19), p(20), p(21), p(22), p(23), p(24))
-        Case 26: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18), p(19), p(20), p(21), p(22), p(23), p(24), p(25))
-        Case 27: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18), p(19), p(20), p(21), p(22), p(23), p(24), p(25), p(26))
-        Case 28: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18), p(19), p(20), p(21), p(22), p(23), p(24), p(25), p(26), p(27))
-        Case 29: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18), p(19), p(20), p(21), p(22), p(23), p(24), p(25), p(26), p(27), p(28))
-        Case 30: res = Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18), p(19), p(20), p(21), p(22), p(23), p(24), p(25), p(26), p(27), p(28), p(29))
+        Case 0: res = .Run(funcName)
+        Case 1: res = .Run(funcName, p(0))
+        Case 2: res = .Run(funcName, p(0), p(1))
+        Case 3: res = .Run(funcName, p(0), p(1), p(2))
+        Case 4: res = .Run(funcName, p(0), p(1), p(2), p(3))
+        Case 5: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4))
+        Case 6: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5))
+        Case 7: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6))
+        Case 8: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7))
+        Case 9: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8))
+        Case 10: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9))
+        Case 11: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10))
+        Case 12: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11))
+        Case 13: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12))
+        Case 14: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13))
+        Case 15: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14))
+        Case 16: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15))
+        Case 17: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16))
+        Case 18: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17))
+        Case 19: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18))
+        Case 20: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18), p(19))
+        Case 21: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18), p(19), p(20))
+        Case 22: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18), p(19), p(20), p(21))
+        Case 23: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18), p(19), p(20), p(21), p(22))
+        Case 24: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18), p(19), p(20), p(21), p(22), p(23))
+        Case 25: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18), p(19), p(20), p(21), p(22), p(23), p(24))
+        Case 26: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18), p(19), p(20), p(21), p(22), p(23), p(24), p(25))
+        Case 27: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18), p(19), p(20), p(21), p(22), p(23), p(24), p(25), p(26))
+        Case 28: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18), p(19), p(20), p(21), p(22), p(23), p(24), p(25), p(26), p(27))
+        Case 29: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18), p(19), p(20), p(21), p(22), p(23), p(24), p(25), p(26), p(27), p(28))
+        Case 30: res = .Run(funcName, p(0), p(1), p(2), p(3), p(4), p(5), p(6), p(7), p(8), p(9), p(10), p(11), p(12), p(13), p(14), p(15), p(16), p(17), p(18), p(19), p(20), p(21), p(22), p(23), p(24), p(25), p(26), p(27), p(28), p(29))
         Case Else: Err.Raise 9001, "", "(UnitTest) Registered Test has Error, Arguments are over 30."
     End Select
+    End With
     ApplicationRun = res
 End Function
 
 Private Function Equals(expected, actual) As Boolean
     Dim result
     Equals = False
-    If VarType(expected) <> VarType(actual) Then _
-        Err.Raise 9101, "", "Failure: Var type is not equal. expected is " & TypeName(expected) & ", actual is " & TypeName(actual)
+    If VarType(expected) <> VarType(actual) Then
+        If IsNumeric(expected) And IsNumeric(actual) Then Else _
+            Err.Raise 9101, "", "Failure: Var type is not equal. expected is " & TypeName(expected) & ", actual is " & TypeName(actual)
+    End If
     If VarType(expected) < vbArray Then
         If VarType(expected) = vbObject Then
             If TryEqual(expected, actual, result) Then
@@ -472,7 +476,7 @@ End Function
 
 Private Function TryEqual(a, b, result) As Boolean
     On Error GoTo errEqual
-    result = a.equal(b)
+    result = a.Equals((b))
     TryEqual = True
     Exit Function
 errEqual:
