@@ -101,9 +101,7 @@ End Function
 
 Public Function AssertEqual(expected, actual)
     On Error GoTo errCondition
-    If VarType(expected) = vbObject And VarType(actual) = vbObject Then If expected.Equals((actual)) Then GoTo pass Else Call Err.Raise(9003, "", "NG: Should be equal.")
-    If expected = actual Then Else Call Err.Raise(9003, "", "NG: Should be Equal. expected is " & expected & ", actual is " & actual)
-pass:
+    If Equals(expected, actual) = False Then Call Err.Raise(9003, "", "NG: Should be Equal. expected is " & expected & ", actual is " & actual)
     Exit Function
 errCondition:
     CopyErr
@@ -112,8 +110,7 @@ End Function
 
 Public Function AssertNotEqual(expected, actual)
     On Error GoTo errCondition
-    If VarType(expected) = vbObject And VarType(actual) = vbObject Then If expected.Equals((actual)) = False Then GoTo pass Else Call Err.Raise(9004, "", "NG: Should NOT be equal.")
-    If expected <> actual Then Else Call Err.Raise(9004, "", "NG: Should NOT be Equal. expected is " & expected & ", actual is " & actual)
+    If Equals(expected, actual) Then Call Err.Raise(9004, "", "NG: Should NOT be Equal. expected is " & expected & ", actual is " & actual)
 pass:
     Exit Function
 errCondition:
@@ -145,9 +142,9 @@ Public Function AssertContains(expected, collect)
     On Error GoTo errCondition
     Dim src
     For Each src In collect
-        If expected = src Then GoTo pass
+        If Equals(expected, src) Then GoTo pass
     Next
-    Call Err.Raise(9009, "", "NG: Should contain")
+    Call Err.Raise(9009, "", "NG: Should contain " & ToString(expected))
 pass:
     Exit Function
 errCondition:
@@ -159,7 +156,7 @@ Public Function AssertDoesNotContains(expected, collect)
     On Error GoTo errCondition
     Dim src
     For Each src In collect
-        If expected = src Then Call Err.Raise(9010, "", "NG: Should Not contain")
+        If Equals(expected, src) Then Call Err.Raise(9010, "", "NG: Should Not contain " & ToString(expected))
     Next
 pass:
     Exit Function
@@ -445,6 +442,45 @@ Private Function ApplicationRun(testFunc As Collection) As Variant
         Case Else: Err.Raise 9001, "", "(UnitTest) Registered Test has Error, Arguments are over 30."
     End Select
     ApplicationRun = res
+End Function
+
+Private Function Equals(expected, actual) As Boolean
+    Dim result
+    Equals = False
+    If VarType(expected) <> VarType(actual) Then _
+        Err.Raise 9101, "", "NG: Var type is not equal. expected is " & TypeName(expected) & ", actual is " & TypeName(actual)
+    If VarType(expected) < vbArray Then
+        If VarType(expected) = vbObject Then
+            If TryEqual(expected, actual, result) Then
+                If result Then Equals = True
+            Else
+                Err.Raise 9102, "", "NG: Cannot evaluate Equal(). type name  """ & TypeName(expected) & """"
+            End If
+        Else
+            If expected = actual Then Equals = True
+        End If
+    Else
+        
+    End If
+End Function
+
+Private Function TryEqual(a, b, result) As Boolean
+    On Error GoTo errEqual
+    result = a.equal(b)
+    TryEqual = True
+    Exit Function
+errEqual:
+    TryEqual = False
+End Function
+
+Private Function ToString(val) As String
+    If VarType(val) = vbObject Then
+        On Error GoTo errToString
+            ToString = val.ToString()
+errToString:
+    Else
+        If VarType(val) < vbArray Then ToString = CStr(val)
+    End If
 End Function
 
 Private Function GetFunctionStringWithArgument(testFunc As Collection) As String
