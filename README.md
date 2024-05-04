@@ -18,8 +18,8 @@ src
     - RunTests() method has been created, based on header ( comment as "[Fact]", "[Theory]") of test function.
     - [Fact], [Theory] can use "Skip".
     - [Theory] can use "InlineData()", "MemberData()".
+ - Results property has test result (Test name, result, description, time).
  
-
 Before using, switch error trapping in VBE > Tools > Options > General > Error Trapping > "Break on Unhandled Errors".
 
 ### Caution
@@ -42,6 +42,7 @@ ArrayExを作った時の副産物レポジトリ
  - CreateRunTests()を用いてRunTests()を作成することができます
     - テストメソッドとして識別する場合は、テストメソッド名の直前にコメントで直前に[Fact]や [Theory] と付けて下さい
     - [Theory] を用いた場合は "InlineData()", "MemberData()" を用いてテストメソッドの引数を指定できます
+ - Results プロパティはテストの結果を取得できます
 
  文字コードが CRLFになるように保存しています。Windowsユーザーはダウンロードしてインポートすればそのまま使用できます  
  Windows以外のOSを利用されている方は文字コードをご確認ください。  
