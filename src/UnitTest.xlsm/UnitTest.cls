@@ -264,6 +264,25 @@ errCondition:
     ErrorProcess
 End Function
 
+Public Function AssertDistinct(collect)
+    On Error GoTo errCondition
+    Dim col1, col2, cnt1 As Long, cnt2 As Long
+    For Each col1 In collect
+        cnt1 = cnt1 + 1
+        For Each col2 In collect
+            cnt2 = cnt2 + 1
+            If cnt1 <> cnt2 Then
+                If Equals(col1, col2) Then Call Err.Raise(9023, "", "NG: Should be distinct")
+            End If
+        Next
+        cnt2 = 0
+    Next
+    Exit Function
+errCondition:
+    ErrorProcess
+End Function
+
+
 Public Function AssertHasError()
      If Err.Number <> 0 Then
     Else
