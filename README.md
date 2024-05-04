@@ -10,14 +10,14 @@ src
 
 ## Feature
  - Assert*() functions validate test result.
-    - AssertTrue(), AssertFalse(), AssertEqual(), AssertNotEqual(), AssertHasError(), AssertHasNoError()
+    - AssertTrue(), AssertFalse(), AssertEqual(), AssertNotEqual(), AssertSame(), AssertNotSame(), AssertContains(), AssertStartsWith(), AssertEmpty(), AssertNothing(), AssertIsType(), AssertSingle(), AssertDistinct(), AssertHasError(), AssertHasNoError(), ...
  - Run single test method by Run macro(F5), you can validate by Assert*() functions.
  - RunTests() function run registered test by RegisterTest().
     - Registered test name is called from UnitTest.cls by Application.Run().
  - CreateRunTests() function can create RunTests().
     - RunTests() method has been created, based on header ( comment as "[Fact]", "[Theory]") of test function.
     - [Fact], [Theory] can use "Skip".
-    - [Theory] can use "InlineData()", "MemberData".
+    - [Theory] can use "InlineData()", "MemberData()".
  
 
 Before using, switch error trapping in VBE > Tools > Options > General > Error Trapping > "Break on Unhandled Errors".
@@ -39,6 +39,9 @@ ArrayExを作った時の副産物レポジトリ
     - (1) のPrivate field を引数として与えてください
     - メソッドを作っているときはテストメソッドをF5キーで実行して確かめて修正してを繰り返して、全体をテストしたいときはRunTests()のメソッドを実行して使っていました
  - 使用するときは、ツール>オプション>全般>エラー トラップ>"エラー処理対象外のエラーで中断" に設定してご使用ください
+ - CreateRunTests()を用いてRunTests()を作成することができます
+    - テストメソッドとして識別する場合は、テストメソッド名の直前にコメントで直前に[Fact]や [Theory] と付けて下さい
+    - [Theory] を用いた場合は "InlineData()", "MemberData()" を用いてテストメソッドの引数を指定できます
 
  文字コードが CRLFになるように保存しています。Windowsユーザーはダウンロードしてインポートすればそのまま使用できます  
  Windows以外のOSを利用されている方は文字コードをご確認ください。  

@@ -86,8 +86,7 @@ Public Function AssertTrue(condition)
     If condition = True Then Else Call Err.Raise(9001, "", "NG: Should be True.")
     Exit Function
 errCondition:
-    CopyErr
-    If isSingleTest Then DebugPrintErr
+    ErrorProcess
 End Function
 
 Public Function AssertFalse(condition)
@@ -95,31 +94,194 @@ Public Function AssertFalse(condition)
     If condition = False Then Else Call Err.Raise(9002, "", "NG: Should be False.")
     Exit Function
 errCondition:
-    CopyErr
-     If isSingleTest Then DebugPrintErr
+    ErrorProcess
 End Function
 
 Public Function AssertEqual(expected, actual)
     On Error GoTo errCondition
-    If VarType(expected) = vbObject And VarType(actual) = vbObject Then If expected.Equals((actual)) Then GoTo pass Else Call Err.Raise(9003, "", "NG: Should be equal.")
-    If expected = actual Then Else Call Err.Raise(9003, "", "NG: Should be Equal. expected is " & expected & ", actual is " & actual)
-pass:
+    If Equals(expected, actual) = False Then Call Err.Raise(9003, "", "NG: Should be Equal. expected is " & expected & ", actual is " & actual)
+    Exit Function
+errCondition:
+    ErrorProcess
+End Function
+
+Public Function AssertNotEqual(expected, actual)
+    On Error GoTo errCondition
+    If Equals(expected, actual) Then Call Err.Raise(9004, "", "NG: Should NOT be Equal. expected is " & expected & ", actual is " & actual)
+    Exit Function
+errCondition:
+    ErrorProcess
+End Function
+
+Public Function AssertSame(expected, actual)
+    On Error GoTo errCondition
+    If expected Is actual Then Else Call Err.Raise(9007, "", "NG: Should be same. but Not same")
+    Exit Function
+errCondition:
+    ErrorProcess
+End Function
+
+Public Function AssertNotSame(expected, actual)
+    On Error GoTo errCondition
+    If expected Is actual Then Call Err.Raise(9008, "", "NG: Should be Not same. but same")
+    Exit Function
+errCondition:
+    ErrorProcess
+End Function
+
+Public Function AssertContains(expected, collect)
+    On Error GoTo errCondition
+    Dim src
+    For Each src In collect
+        If Equals(expected, src) Then Exit Function
+    Next
+    Call Err.Raise(9009, "", "NG: Should contain " & ToString(expected))
+errCondition:
+    ErrorProcess
+End Function
+
+Public Function AssertDoesNotContains(expected, collect)
+    On Error GoTo errCondition
+    Dim src
+    For Each src In collect
+        If Equals(expected, src) Then Call Err.Raise(9010, "", "NG: Should Not contain " & ToString(expected))
+    Next
+    Exit Function
+errCondition:
+    ErrorProcess
+End Function
+
+Public Function AssertInRange(actual, low, high)
+    On Error GoTo errCondition
+    If low <= actual And actual <= high Then Else Call Err.Raise(9011, "", "NG: Should be " & actual & " in Range(" & low & ", " & high & ")")
+    Exit Function
+errCondition:
+    ErrorProcess
+End Function
+
+Public Function AssertNotInRange(actual, low, high)
+    On Error GoTo errCondition
+    If low <= actual And actual <= high Then Call Err.Raise(9012, "", "NG: Should Not be " & actual & " in Range(" & low & ", " & high & ")")
     Exit Function
 errCondition:
     CopyErr
     If isSingleTest Then DebugPrintErr
 End Function
 
-Public Function AssertNotEqual(expected, actual)
+Public Function AssertStartsWith(expectedStartString, actualString)
     On Error GoTo errCondition
-    If VarType(expected) = vbObject And VarType(actual) = vbObject Then If expected.Equals((actual)) = False Then GoTo pass Else Call Err.Raise(9004, "", "NG: Should NOT be equal.")
-    If expected <> actual Then Else Call Err.Raise(9004, "", "NG: Should NOT be Equal. expected is " & expected & ", actual is " & actual)
-pass:
+    If Left(actualString, Len(expectedStartString)) = expectedStartString Then Else Call Err.Raise(9013, "", "NG: Should be start with """ & expectedStartString & """, but """ & actualString & """")
     Exit Function
 errCondition:
-    CopyErr
-    If isSingleTest Then DebugPrintErr
+    ErrorProcess
 End Function
+
+Public Function AssertEndsWith(expectedEndString, actualString)
+    On Error GoTo errCondition
+    If Right(actualString, Len(expectedEndString)) = expectedEndString Then Else Call Err.Raise(9014, "", "NG: Should be end with """ & expectedEndString & """, but """ & actualString & """")
+    Exit Function
+errCondition:
+    ErrorProcess
+End Function
+
+Public Function AssertEmpty(collect)
+    On Error GoTo errCondition
+    Dim src
+    For Each src In collect
+        Call Err.Raise(9015, "", "NG: Should be empty")
+    Next
+    Exit Function
+errCondition:
+    ErrorProcess
+End Function
+
+Public Function AssertNotEmpty(collect)
+    On Error GoTo errCondition
+    Dim src
+    For Each src In collect
+        Exit Function
+    Next
+    Call Err.Raise(9016, "", "NG: Should be Not empty")
+errCondition:
+    ErrorProcess
+End Function
+
+Public Function AssertNull(obj)
+    On Error GoTo errCondition
+    If IsNull(obj) Then Else Call Err.Raise(9017, "", "NG: Should be null")
+    Exit Function
+errCondition:
+    ErrorProcess
+End Function
+
+Public Function AssertNotNull(obj)
+    On Error GoTo errCondition
+    If IsNull(obj) Then Call Err.Raise(9018, "", "NG: Should be Not null")
+    Exit Function
+errCondition:
+    ErrorProcess
+End Function
+
+Public Function AssertNothing(obj)
+    On Error GoTo errCondition
+    If VarType(obj) <> vbObject Then Call Err.Raise(9019, "", "NG: Should be object")
+    If obj Is Nothing Then Else Call Err.Raise(9019, "", "NG: Should be Nothing")
+    Exit Function
+errCondition:
+    ErrorProcess
+End Function
+
+Public Function AssertNotNothing(obj)
+    On Error GoTo errCondition
+    If VarType(obj) <> vbObject Then Call Err.Raise(9020, "", "NG: Should be object")
+    If obj Is Nothing Then Call Err.Raise(9020, "", "NG: Should be Not Nothing")
+    Exit Function
+errCondition:
+    ErrorProcess
+End Function
+
+Public Function AssertIsType(expectedType As String, obj)
+    On Error GoTo errCondition
+    If TypeName(obj) = expectedType Then Else Call Err.Raise(9021, "", "NG: Should be type """ & expectedType & """, but """ & TypeName(obj) & """")
+    Exit Function
+errCondition:
+    ErrorProcess
+End Function
+
+Public Function AssertIsNotType(expectedType As String, obj)
+    On Error GoTo errCondition
+    If TypeName(obj) = expectedType Then Call Err.Raise(9022, "", "NG: Should Not be type """ & expectedType & """, but """ & TypeName(obj) & """")
+    Exit Function
+errCondition:
+    ErrorProcess
+End Function
+
+Public Function AssertSingle(collect)
+    On Error GoTo errCondition
+    If collect.Count <> 1 Then Call Err.Raise(9023, "", "NG: Should be single")
+    Exit Function
+errCondition:
+    ErrorProcess
+End Function
+
+Public Function AssertDistinct(collect)
+    On Error GoTo errCondition
+    Dim col1, col2, cnt1 As Long, cnt2 As Long
+    For Each col1 In collect
+        cnt1 = cnt1 + 1
+        For Each col2 In collect
+            cnt2 = cnt2 + 1
+            If cnt1 <> cnt2 Then
+                If Equals(col1, col2) Then Call Err.Raise(9023, "", "NG: Should be distinct")
+            End If
+        Next
+        cnt2 = 0
+    Next
+    Exit Function
+errCondition:
+    ErrorProcess
+End Function
+
 
 Public Function AssertHasError()
      If Err.Number <> 0 Then
@@ -130,8 +292,7 @@ Public Function AssertHasError()
     Err.Clear
     Exit Function
 errCondition:
-    CopyErr
-    If isSingleTest Then DebugPrintErr: Err.Clear
+    ErrorProcess
 End Function
 
 Public Function AssertHasNoError()
@@ -148,8 +309,7 @@ Public Function AssertHasNoError()
     End If
     Exit Function
 errCondition:
-    CopyErr
-    If isSingleTest Then DebugPrintErr:     Err.Clear
+    ErrorProcess
 End Function
 
 Public Function ClearErr()
@@ -208,6 +368,11 @@ On Error Resume Next
     uTest.ClearErr
 End Function
 
+Private Function ErrorProcess()
+    CopyErr
+    If isSingleTest Then DebugPrintErr
+End Function
+
 Private Function DebugPrintErr()
     Debug.Print errDescription_
 End Function
@@ -262,6 +427,45 @@ Private Function ApplicationRun(testFunc As Collection) As Variant
     ApplicationRun = res
 End Function
 
+Private Function Equals(expected, actual) As Boolean
+    Dim result
+    Equals = False
+    If VarType(expected) <> VarType(actual) Then _
+        Err.Raise 9101, "", "NG: Var type is not equal. expected is " & TypeName(expected) & ", actual is " & TypeName(actual)
+    If VarType(expected) < vbArray Then
+        If VarType(expected) = vbObject Then
+            If TryEqual(expected, actual, result) Then
+                If result Then Equals = True
+            Else
+                Err.Raise 9102, "", "NG: Cannot evaluate Equal(). type name  """ & TypeName(expected) & """"
+            End If
+        Else
+            If expected = actual Then Equals = True
+        End If
+    Else
+        
+    End If
+End Function
+
+Private Function TryEqual(a, b, result) As Boolean
+    On Error GoTo errEqual
+    result = a.equal(b)
+    TryEqual = True
+    Exit Function
+errEqual:
+    TryEqual = False
+End Function
+
+Private Function ToString(val) As String
+    If VarType(val) = vbObject Then
+        On Error GoTo errToString
+            ToString = val.ToString()
+errToString:
+    Else
+        If VarType(val) < vbArray Then ToString = CStr(val)
+    End If
+End Function
+
 Private Function GetFunctionStringWithArgument(testFunc As Collection) As String
     Dim str As String, args, arg
     
@@ -291,7 +495,7 @@ End Function
 Private Function GetTheoryData(texts, startLine As Long) As Collection
     Dim i As Long, funcName As String, theoryDatas As New Collection, dataName, memberData, memberDatas As Collection
 
-    For i = startLine To UBound(texts)    
+    For i = startLine To UBound(texts)
         If InStr(LCase(texts(i)), "[inlinedata(") > 0 Then
             theoryDatas.Add Replace(Replace(Mid(texts(i), Len("'[inlinedata(") + 1), " ", ""), ")]", "")
         End If
