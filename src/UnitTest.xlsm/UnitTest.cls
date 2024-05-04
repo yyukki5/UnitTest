@@ -361,8 +361,10 @@ End Sub
 ' Private functions ------------------------------------------------------------------------
 Private Function RunTest(testFunc As Collection, uTest As UnitTest)
 On Error Resume Next
-    Dim txt As String
+    Dim txt As String, startTime As Double, testTimeMs As Long
+    startTime = Now + Timer
     ApplicationRun testFunc
+    testTimeMs = (Now + Timer - startTime) * 1000
     CopyErr  ' When application run has error, catch
     If hasError_ = False Then
         hasError_ = uTest.HasError
@@ -370,22 +372,23 @@ On Error Resume Next
         errResult_ = uTest.ErrorResult
     End If
     
-    Debug.Print GetResultText(AddResultInfo(testFunc))
+    Debug.Print GetResultText(AddResultInfo(testFunc, testTimeMs))
     ClearErr
     uTest.ClearErr
 End Function
 
-Private Function AddResultInfo(testFunc As Collection) As Collection
+Private Function AddResultInfo(testFunc As Collection, testTimeMs) As Collection
     Dim resInfos As New Collection
     resInfos.Add GetFunctionStringWithArgument(testFunc), "testName"
     resInfos.Add hasError_ = False, "result"
     resInfos.Add IIf(hasError_, Mid(errResult_, Len(vbCrLf) + 1), ""), "errResult"
+    resInfos.Add testTimeMs, "Time"
     resultTexts_.Add resInfos
     Set AddResultInfo = resInfos
 End Function
 
 Private Function GetResultText(resInfos As Collection) As String
-    GetResultText = IIf(resInfos("result"), "Success", "Failure") & ": " & resInfos("testName") & IIf(resInfos("result"), "", vbCrLf & resInfos("errResult"))
+    GetResultText = IIf(resInfos("result"), "Success", "Failure") & ": " & resInfos("testName") & "  (" & resInfos("Time") & "[ms])" & IIf(resInfos("result"), "", vbCrLf & resInfos("errResult"))
 End Function
 
 Private Function ErrorProcess()
