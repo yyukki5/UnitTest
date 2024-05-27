@@ -17,12 +17,19 @@ Sub RunTests()
     test.RegisterTest "Add_Scenario_ExpectedBehavior", 2, 3, 4
 
     test.RunTests test_
+    
 End Sub
 
 '[Fact]
 Sub Test_Test()
+    Dim col As Collection
+    Set col = New Collection
+
     test_.AssertTrue True
     test_.AssertTrue False
+    test_.AssertTrue "Hello"
+    test_.AssertTrue col
+    
     test_.AssertFalse False
     test_.AssertFalse True
     test_.AssertEqual 1, 1
