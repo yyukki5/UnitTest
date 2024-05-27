@@ -5,7 +5,7 @@ END
 Attribute VB_Name = "UnitTest"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
-Attribute VB_PredeclaredId = False
+Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
@@ -348,7 +348,7 @@ Public Function ClearErr()
 End Function
 
 ' Before Using this function: Need to check in option of application, "Trust access to the VBA project object model"
-Public Sub CreateRunTests(moduleName As String, Optional privateUnitTestName As String = "test_")
+Public Sub CreateRunTests(Optional moduleName As String = "UnitTests", Optional privateUnitTestName As String = "UnitTest")
     Dim i As Long, txt As String, txts, code As String, testFuncs As New Collection, testFuncInfos As Collection, runTestsLine As Long, codeModuleObject As Object
           
     Set codeModuleObject = Application.VBE.ActiveVBProject.VBComponents(moduleName).CodeModule
