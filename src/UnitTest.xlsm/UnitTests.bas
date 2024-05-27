@@ -1,10 +1,8 @@
 Attribute VB_Name = "UnitTests"
 Option Explicit
 
-Private test_ As New UnitTest
-
 Sub CreateTests()
-    test_.CreateRunTests "UnitTests", "test_"
+    UnitTest.CreateRunTests
 End Sub
 
 Sub RunTests()
@@ -16,8 +14,7 @@ Sub RunTests()
     test.RegisterTest "Add_Scenario_ExpectedBehavior", 1, 2, 3
     test.RegisterTest "Add_Scenario_ExpectedBehavior", 2, 3, 4
 
-    test.RunTests test_
-    
+    test.RunTests UnitTest
 End Sub
 
 '[Fact]
@@ -25,7 +22,7 @@ Sub Test_Test()
     Dim col As Collection
     Set col = New Collection
     
-    With test_.NameOf("Test for sample")
+    With UnitTest.NameOf("Test for sample")
         .AssertTrue True
         .AssertTrue False
         .AssertTrue "Hello"
@@ -64,7 +61,7 @@ Sub Add_Scenario_ExpectedBehavior(a, b, res As Double)
     ' Act
     result = Add(a, b)
     ' Assert
-    test_.AssertEqual res, result
+    UnitTest.AssertEqual res, result
 End Sub
 
 Private Function Add(a, b) As Double
