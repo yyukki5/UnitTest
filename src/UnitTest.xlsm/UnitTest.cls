@@ -380,6 +380,11 @@ nonRunTests:
     End With
 End Sub
 
+Public Function NameOf(testUnitName As String) As UnitTest
+    If isSingleTest Then Debug.Print vbCrLf & "--- " & testUnitName & " -------------------------"
+    Set NameOf = Me
+End Function
+
 ' Private functions ------------------------------------------------------------------------
 Private Function RunTest(testFunc As Collection, uTest As UnitTest)
 On Error Resume Next

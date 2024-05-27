@@ -24,31 +24,33 @@ End Sub
 Sub Test_Test()
     Dim col As Collection
     Set col = New Collection
-
-    test_.AssertTrue True
-    test_.AssertTrue False
-    test_.AssertTrue "Hello"
-    test_.AssertTrue col
     
-    test_.AssertFalse False
-    test_.AssertFalse True
-    test_.AssertEqual 1, 1
-    test_.AssertEqual 1, 2
-    test_.AssertNotEqual 1, 2
-    test_.AssertNotEqual 1, 1
-
-    On Error Resume Next '<--- Need for .AssertHasError(), .AssertHasNoError()
-    Err.Raise 9001
-    test_.AssertHasError
-    Err.Raise 9001, "Sample", "This is sample Error."
-    test_.AssertHasNoError
-
-    Err.Clear
-    test_.AssertHasError
-    Err.Clear
-    test_.AssertHasNoError
-    On Error GoTo 0
+    With test_.NameOf("Test for sample")
+        .AssertTrue True
+        .AssertTrue False
+        .AssertTrue "Hello"
+        .AssertTrue col
+        
+        .AssertFalse False
+        .AssertFalse True
+        .AssertEqual 1, 1
+        .AssertEqual 1, 2
+        .AssertNotEqual 1, 2
+        .AssertNotEqual 1, 1
     
+        On Error Resume Next '<--- Need for .AssertHasError(), .AssertHasNoError()
+        Err.Raise 9001
+        .AssertHasError
+        Err.Raise 9001, "Sample", "This is sample Error."
+        .AssertHasNoError
+    
+        Err.Clear
+        .AssertHasError
+        Err.Clear
+        .AssertHasNoError
+        On Error GoTo 0
+        
+    End With
 End Sub
 
 
