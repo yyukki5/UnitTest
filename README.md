@@ -6,7 +6,7 @@ src
  - UnitTests.bas <-- Sample code.
 
 ## Sample
-![img](https://github.com/yyukki5/UnitTest/assets/136491951/a21f2b28-3da7-4683-8973-899eff5d83e4)
+![img](https://github.com/yyukki5/UnitTest/assets/136491951/1e3b1afd-274f-4345-b7dc-68b61b68fbef)
 
 ## Feature
  - Assert*() functions validate test result.
@@ -18,6 +18,7 @@ src
     - RunTests() method has been created, based on header ( comment as "[Fact]", "[Theory]") of test function.
     - [Fact], [Theory] can use "Skip".
     - [Theory] can use "InlineData()", "MemberData()".
+    - Need to check VBA Project Object Model Access.
  - Results property has test result (Test name, result, description, time).
  
 Before using, switch error trapping in VBE > Tools > Options > General > Error Trapping > "Break on Unhandled Errors".
@@ -31,19 +32,19 @@ Windows user can use by download and directly import. Non Windows users, please 
 ArrayExを作った時の副産物レポジトリ  
 場当たり的に作ったのですが、便利だったので誰かの役に立つといいなと思っています  
 
+主な仕様
  - UnitTest.cls をプロジェクトに入れるだけで使えます。クラス一つだけで実装しているのが気に入っています  
- - テストコードは標準モジュールに書きます  
- （Private field に変数を準備したり(1), On Error Resume Nextを準備したり(2)と書き方に少しクセがあります）  
- - テストメソッド単体で実行するできます
+ - テストコードは標準モジュールに書きます 
+ - テストメソッドをデバッグ実行することで、テスト単体で実行することができます
  - 複数のテストメソッドを一度に実行する場合は、RegisterTest() でテストメソッドを登録してRunTests()で実行します
-    - (1) のPrivate field を引数として与えてください
-    - メソッドを作っているときはテストメソッドをF5キーで実行して確かめて修正してを繰り返して、全体をテストしたいときはRunTests()のメソッドを実行して使っていました
- - 使用するときは、ツール>オプション>全般>エラー トラップ>"エラー処理対象外のエラーで中断" に設定してご使用ください
- - CreateRunTests()を用いてRunTests()を作成することができます
+   - CreateRunTests()を用いてRunTests()を作成することができます
     - テストメソッドとして識別する場合は、テストメソッド名の直前にコメントで直前に[Fact]や [Theory] と付けて下さい
     - [Theory] を用いた場合は "InlineData()", "MemberData()" を用いてテストメソッドの引数を指定できます
- - Results プロパティはテストの結果を取得できます
+    - アプリケーションの"VBA プロジェクトオブジェクトモデルへのアクセスを信頼する"にチェックを入れた状態で使用してください
+ - テストの結果はDebug.Printされます。また Results プロパティでも取得できます
+ - 使用するときは、ツール>オプション>全般>エラー トラップ>"エラー処理対象外のエラーで中断" に設定してご使用ください
 
+<br>
  文字コードが CRLFになるように保存しています。Windowsユーザーはダウンロードしてインポートすればそのまま使用できます  
  Windows以外のOSを利用されている方は文字コードをご確認ください。  
  (Fetchすれば大丈夫だと思いますが...念のため)

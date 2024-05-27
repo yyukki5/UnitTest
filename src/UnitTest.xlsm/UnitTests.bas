@@ -1,10 +1,8 @@
 Attribute VB_Name = "UnitTests"
 Option Explicit
 
-Private test_ As New UnitTest
-
 Sub CreateTests()
-    test_.CreateRunTests "UnitTests", "test_"
+    UnitTest.CreateRunTests
 End Sub
 
 Sub RunTests()
@@ -16,32 +14,40 @@ Sub RunTests()
     test.RegisterTest "Add_Scenario_ExpectedBehavior", 1, 2, 3
     test.RegisterTest "Add_Scenario_ExpectedBehavior", 2, 3, 4
 
-    test.RunTests test_
+    test.RunTests UnitTest
 End Sub
 
 '[Fact]
 Sub Test_Test()
-    test_.AssertTrue True
-    test_.AssertTrue False
-    test_.AssertFalse False
-    test_.AssertFalse True
-    test_.AssertEqual 1, 1
-    test_.AssertEqual 1, 2
-    test_.AssertNotEqual 1, 2
-    test_.AssertNotEqual 1, 1
-
-    On Error Resume Next '<--- Need for .AssertHasError(), .AssertHasNoError()
-    Err.Raise 9001
-    test_.AssertHasError
-    Err.Raise 9001, "Sample", "This is sample Error."
-    test_.AssertHasNoError
-
-    Err.Clear
-    test_.AssertHasError
-    Err.Clear
-    test_.AssertHasNoError
-    On Error GoTo 0
+    Dim col As Collection
+    Set col = New Collection
     
+    With UnitTest.NameOf("Test for sample")
+        .AssertTrue True
+        .AssertTrue False
+        .AssertTrue "Hello"
+        .AssertTrue col
+        
+        .AssertFalse False
+        .AssertFalse True
+        .AssertEqual 1, 1
+        .AssertEqual 1, 2
+        .AssertNotEqual 1, 2
+        .AssertNotEqual 1, 1
+    
+        On Error Resume Next '<--- Need for .AssertHasError(), .AssertHasNoError()
+        Err.Raise 9001
+        .AssertHasError
+        Err.Raise 9001, "Sample", "This is sample Error."
+        .AssertHasNoError
+    
+        Err.Clear
+        .AssertHasError
+        Err.Clear
+        .AssertHasNoError
+        On Error GoTo 0
+        
+    End With
 End Sub
 
 
@@ -55,7 +61,7 @@ Sub Add_Scenario_ExpectedBehavior(a, b, res As Double)
     ' Act
     result = Add(a, b)
     ' Assert
-    test_.AssertEqual res, result
+    UnitTest.AssertEqual res, result
 End Sub
 
 Private Function Add(a, b) As Double
