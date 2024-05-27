@@ -6,7 +6,7 @@ src
  - UnitTests.bas <-- Sample code.
 
 ## Sample
-![img](https://github.com/yyukki5/UnitTest/assets/136491951/6301d0ff-57b7-452e-8c91-f5adb23a2ffb)
+![img](https://github.com/yyukki5/UnitTest/assets/136491951/1e3b1afd-274f-4345-b7dc-68b61b68fbef)
 
 ## Feature
  - Assert*() functions validate test result.
