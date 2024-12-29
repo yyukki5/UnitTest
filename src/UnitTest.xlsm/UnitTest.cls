@@ -11,7 +11,7 @@ Option Explicit
 
 ' ------------------------------------------------------------------------------------------------------------
 ' Project           : https://github.com/yyukki5/UnitTest
-' Version           : 1.3.0
+' Version           : 1.4.0
 ' ------------------------------------------------------------------------------------------------------------
 
 Private hasError_ As Boolean
@@ -483,6 +483,7 @@ End Function
 Private Function Equals(Expected, Actual) As Boolean
     Dim result
     Equals = False
+    If IsNull(Expected) And IsNull(Actual) Then Equals = True: Exit Function
     If VarType(Expected) <> VarType(Actual) Then
         If IsNumeric(Expected) And IsNumeric(Actual) Then Else _
             Err.Raise 9101, "", "Var type is not equal. expected is " & TypeName(Expected) & ", actual is " & TypeName(Actual)
@@ -497,7 +498,29 @@ Private Function Equals(Expected, Actual) As Boolean
         Else
             If Expected = Actual Then Equals = True
         End If
+    
     Else
+        Dim exp_col As New Collection, act_col As New Collection, v As Variant, i As Long
+        For Each v In Expected: Call exp_col.Add(v): Next
+        For Each v In Actual: Call act_col.Add(v): Next
+        
+        If exp_col.Count <> act_col.Count Then Exit Function
+        If exp_col.Count = 0 Then
+            Equals = True
+        Else
+            For i = 1 To exp_col.Count
+                If VarType(Expected) = vbObject Then
+                    If TryEqual(exp_col(i), act_col(i), result) Then
+                        If result = False Then Exit Function
+                    Else
+                        Err.Raise 9102, "", "Cannot evaluate Equal(). type name  """ & TypeName(exp_col(i)) & """"
+                    End If
+                Else
+                    If exp_col(i) <> act_col(i) Then Exit Function
+                End If
+            Next i
+            Equals = True
+        End If
         
     End If
 End Function
