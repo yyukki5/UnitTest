@@ -11,7 +11,7 @@ Option Explicit
 
 ' ------------------------------------------------------------------------------------------------------------
 ' Project           : https://github.com/yyukki5/UnitTest
-' Version           : 1.3.0
+' Version           : 1.4.0
 ' ------------------------------------------------------------------------------------------------------------
 
 Private hasError_ As Boolean
@@ -515,7 +515,7 @@ Private Function Equals(Expected, Actual) As Boolean
                     Else
                         Err.Raise 9102, "", "Cannot evaluate Equal(). type name  """ & TypeName(exp_col(i)) & """"
                     End If
-    Else
+                Else
                     If exp_col(i) <> act_col(i) Then Exit Function
                 End If
             Next i
